@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IQuestionnaire } from '../models/questionnaire.interface';
-import { map, Observable, throwError, timer } from 'rxjs';
+import { map, Observable, timer } from 'rxjs';
 import { mockQuestionnaire } from './mock-questionnaire';
 
 // Mock backend api service
@@ -26,14 +26,14 @@ export class BackendApiService {
 
           // Case "all elements in answer array should exactly match the condition", e.g. answer [1,2,3] is NOT suitable
           // for condition [1,2]
-          /* return (
+          return (
             currentAnswer !== undefined &&
             JSON.stringify(currentAnswer) === JSON.stringify(c.value)
-          );*/
+          );
 
           // Case "all elements in answer array should be included in the condition array", e.g. answer [1,2,3]
           // is suitable for condition [1,2]
-          if (Array.isArray(currentAnswer) && Array.isArray(c.value)) {
+          /*if (Array.isArray(currentAnswer) && Array.isArray(c.value)) {
             return c.value.every((x) =>
               (currentAnswer as number[]).includes(x)
             );
@@ -42,7 +42,7 @@ export class BackendApiService {
               currentAnswer !== undefined &&
               currentAnswer.toString() === c.value.toString()
             );
-          }
+          }*/
         });
       }
       return {

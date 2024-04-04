@@ -141,7 +141,7 @@ export class QuestionnaireFormComponent implements OnInit {
       }
 
       switch (question.type) {
-        case 'multiple_choice':
+        case 'multiple_choice': {
           const answer = (answerFormValue as boolean[])
             .map((checked: boolean, index: number) => checked && index + 1)
             .filter(Boolean) as number[];
@@ -149,6 +149,7 @@ export class QuestionnaireFormComponent implements OnInit {
             ...question,
             answer,
           };
+        }
         case 'single_choice':
           return {
             ...question,

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
 import { QuestionnaireFormComponent } from './components/questionnaire-form/questionnaire-form.component';
 
 @Component({
