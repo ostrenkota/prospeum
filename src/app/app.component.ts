@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { QuestionnaireFormComponent } from './components/questionnaire-form/questionnaire-form.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  imports: [QuestionnaireFormComponent],
+  template: '<app-questionnaire-form></app-questionnaire-form>',
 })
-export class AppComponent {
-  title = 'prospeum';
-}
+export class AppComponent {}
