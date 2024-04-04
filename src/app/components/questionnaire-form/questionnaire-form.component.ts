@@ -3,7 +3,6 @@ import {
   ChangeDetectorRef,
   Component,
   DestroyRef,
-  OnDestroy,
   OnInit,
 } from '@angular/core';
 import { QuestionnaireService } from '../../services/questionnaire.service';
@@ -11,8 +10,6 @@ import {
   IMultipleChoiceQuestion,
   IQuestionnaire,
 } from '../../models/questionnaire.interface';
-import { first, interval, Subject } from 'rxjs';
-import { LetDirective } from '../../directives/ng-let.directive';
 import { AsyncPipe } from '@angular/common';
 import {
   FormArray,
@@ -32,9 +29,9 @@ type FormControlQMulti = FormArray<FormControl<boolean>>;
 @Component({
   selector: 'app-questionnaire-form',
   standalone: true,
-  imports: [LetDirective, AsyncPipe, ReactiveFormsModule],
+  imports: [AsyncPipe, ReactiveFormsModule],
   templateUrl: './questionnaire-form.component.html',
-  styleUrl: './questionnaire-form.component.css',
+  styleUrl: './questionnaire-form.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuestionnaireFormComponent implements OnInit {
@@ -43,19 +40,27 @@ export class QuestionnaireFormComponent implements OnInit {
     FormControlQSingle | FormControlQMultiLine | FormControlQMulti
   >({});
   public formIsLoading = true;
+  public formLoadingError = false;
 
   constructor(
-    private readonly questionnaireApiService: QuestionnaireService,
+    private readonly questionnaireService: QuestionnaireService,
     private readonly fb: FormBuilder,
     private readonly cdr: ChangeDetectorRef,
     private readonly destroyRef: DestroyRef
   ) {}
 
   ngOnInit(): void {
-    this.questionnaireApiService.questionnaire$
+    this.questionnaireService.questionnaire$
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((questionnaire) => {
         this.formIsLoading = false;
+
+        if (!questionnaire) {
+          this.formLoadingError = true;
+          this.cdr.markForCheck();
+          return;
+        }
+
         this.questionnaire = questionnaire;
 
         this.updateFormControls();
@@ -65,7 +70,7 @@ export class QuestionnaireFormComponent implements OnInit {
     this.dynamicForm.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((value) => {
-        this.questionnaireApiService.updateQuestionnaireData(
+        this.questionnaireService.updateQuestionnaireData(
           this.convertFormToQuestionnaire(value)
         );
       });
@@ -87,7 +92,6 @@ export class QuestionnaireFormComponent implements OnInit {
 
       if (!question.is_triggered) {
         this.dynamicForm.removeControl(stringId, { emitEvent: false });
-        // this.dynamicForm.updateValueAndValidity();
         return;
       }
 

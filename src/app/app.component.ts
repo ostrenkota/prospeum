@@ -6,6 +6,7 @@ import { QuestionnaireFormComponent } from './components/questionnaire-form/ques
   selector: 'app-root',
   standalone: true,
   imports: [QuestionnaireFormComponent],
+  styleUrl: 'app.component.scss',
   template: '<app-questionnaire-form></app-questionnaire-form>',
 })
 export class AppComponent {}

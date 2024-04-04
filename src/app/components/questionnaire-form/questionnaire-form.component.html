@@ -1,31 +1,37 @@
+<div class="form-container">
 @if (formIsLoading) {
-  <div>Loading...</div>
+  <div class="form__loading">Loading...</div>
+} @else if (formLoadingError) {
+  <div class="form__loading-error">Loading error</div>
 } @else {
-  <form [formGroup]="dynamicForm" (ngSubmit)="onSubmit()">
+  <form class="form" [formGroup]="dynamicForm" (ngSubmit)="onSubmit()">
     @for (question of questionnaire; track question.id) {
       @if (question.is_triggered) {
-      <h1>{{question.title}}</h1>
-        @switch (question.type) {
-          @case ('single_choice') {
-            @for (option of question.options; track option.id) {
-              <label>
-                <input type="radio" [formControlName]="question.id.toString()" [name]="question.id.toString()" [value]="option.id"/> {{option.verbose_name}}
-              </label>
+        <div class="form__question">
+          <h3>{{question.title}}</h3>
+            @switch (question.type) {
+              @case ('single_choice') {
+                @for (option of question.options; track option.id) {
+                  <label>
+                    <input type="radio" [formControlName]="question.id.toString()" [name]="question.id.toString()" [value]="option.id"/> {{option.verbose_name}}
+                  </label>
+                }
+              }
+              @case ('multiple_choice') {
+                @for (option of getFormArray(question.id).controls; track option; let index = $index) {
+                  <label>
+                    <input type="checkbox" [formControl]="option"/> {{question.options[index].verbose_name}}
+                  </label>
+                }
+              }
+              @case ('multi_line_text') {
+                  <textarea [formControlName]="question.id"></textarea>
+              }
             }
-          }
-          @case ('multiple_choice') {
-            @for (option of getFormArray(question.id).controls; track option; let index = $index) {
-              <label>
-                <input type="checkbox" [formControl]="option"/> {{question.options[index].verbose_name}}
-              </label>
-            }
-          }
-          @case ('multi_line_text') {
-              <textarea [formControlName]="question.id"></textarea>
-          }
-        }
+        </div>
       }
     }
-    <button [disabled]="!dynamicForm.valid">Submit</button>
+    <button class="form__button" [disabled]="!dynamicForm.valid">Submit</button>
   </form>
 }
+</div>
